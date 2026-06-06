@@ -949,7 +949,15 @@ ul.dropdown-menu {
     }
     
     .hero-title {
-        font-size: 2.2rem;
+        font-size: 1.6rem;
+    }
+    
+    .hero .btn {
+        padding: 16px 30px;
+        font-size: 1rem;
+        white-space: nowrap;
+        width: 100%;
+        max-width: 320px;
     }
     
     .hero-sub {
