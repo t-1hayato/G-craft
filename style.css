@@ -463,12 +463,17 @@ ul.dropdown-menu {
 }
 
 .hero-title {
-    font-family: var(--font-heading);
+    font-family: var(--font-heading), serif;
     font-size: 3.5rem;
     line-height: 1.4;
-    line-height: 2;
     letter-spacing: 0.1em;
-    font-weight: 500;
+    font-weight: 600;
+}
+
+.hero-subtitle {
+    font-family: var(--font-base), sans-serif;
+    font-size: 1.2rem;
+    font-weight: 400;
 }
 
 /* ==========================================================================
@@ -955,8 +960,15 @@ ul.dropdown-menu {
     }
     
     .hero-title {
-        font-size: 1.6rem;
+        font-family: var(--font-heading), serif !important;
+        font-size: clamp(1.8rem, 7vw, 2.4rem);
         margin-bottom: 25px;
+        line-height: 1.4;
+        font-weight: 600;
+    }
+    
+    .hero-subtitle {
+        font-family: var(--font-base), sans-serif !important;
     }
     
     .hero .btn {
