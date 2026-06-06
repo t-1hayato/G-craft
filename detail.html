@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>施工詳細 | G-craft（山田造園）</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Shippori+Mincho:wght@400;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="page.css">
+    <script src="data.js"></script>
+    <style>
+        .detail-hero {
+            position: relative;
+            height: 60vh;
+            background-color: var(--bg-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+            margin-bottom: 80px;
+        }
+        .detail-hero img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            position: absolute;
+            top: 0;
+            left: 0;
+            z-index: 1;
+            opacity: 0.8;
+            animation: slowZoom 20s ease-out forwards;
+        }
+        .detail-hero-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            background: rgba(255, 255, 255, 0.85);
+            padding: 40px 60px;
+            max-width: 800px;
+            margin: 0 20px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+        }
+        .detail-title {
+            font-family: var(--font-heading);
+            font-size: 2rem;
+            color: var(--text-color);
+            margin-bottom: 15px;
+            line-height: 1.5;
+        }
+        .detail-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 120px 20px 100px; /* Header height offset */
+        }
+        .detail-card-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+        .detail-card {
+            background: var(--white);
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .detail-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.12);
+        }
+        .detail-card .card-img-wrap {
+            width: 100%;
+            height: 250px;
+            overflow: hidden;
+        }
+        .detail-card .card-img-wrap img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+        .detail-card:hover .card-img-wrap img {
+            transform: scale(1.05);
+        }
+        .detail-card .card-text-wrap {
+            padding: 25px;
+            font-size: 0.95rem;
+            line-height: 1.8;
+            color: var(--text-color);
+            flex-grow: 1;
+        }
+        .back-link {
+            display: inline-block;
+            margin-top: 60px;
+            font-size: 1.1rem;
+            color: var(--secondary-color);
+            text-decoration: none;
+            border-bottom: 1px solid var(--secondary-color);
+            padding-bottom: 5px;
+            transition: opacity 0.3s ease;
+        }
+        .back-link:hover {
+            opacity: 0.7;
+        }
+        .loading, .error {
+            text-align: center;
+            padding: 100px 20px;
+            font-size: 1.2rem;
+        }
+        @media (max-width: 768px) {
+            .detail-content { padding-top: 80px; }
+            .detail-hero { height: 40vh; }
+            .detail-hero-content { padding: 30px 20px; }
+            .detail-title { font-size: 1.5rem; }
+            .detail-card-grid { grid-template-columns: 1fr; }
+        }
+        
+        /* Lightbox Styles */
+        #lightbox {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.85);
+            z-index: 9999;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            cursor: zoom-out;
+            backdrop-filter: blur(5px);
+        }
+        #lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+        #lightbox img {
+            max-width: 90%;
+            max-height: 90vh;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+            transform: scale(0.95);
+            transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            object-fit: contain;
+        }
+        #lightbox.active img {
+            transform: scale(1);
+        }
+        .close-lightbox {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            color: rgba(255,255,255,0.8);
+            font-size: 40px;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+        .close-lightbox:hover {
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <!-- Preloader -->
+    <div id="preloader">
+        <div class="loader-logo">G-craft</div>
+    </div>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-top">
+            <div class="header-top-inner">
+                <div class="header-contact-block">
+                    <span class="header-tel">☎ 0952-98-1550</span>
+                    <a href="contact.html" class="header-mail">✉ メールお問合せはこちら</a>
+                </div>
+            </div>
+        </div>
+        <div class="header-inner">
+            <h1 class="logo">
+                <a href="index.html"><img src="images/logo_gcraft.png" alt="G-craft" class="logo-gcraft"><img src="images/logo_yamada.png" alt="山田造園" class="logo-yamada"></a>
+            </h1>
+            <nav class="global-nav">
+                <ul>
+                    <li><a href="index.html">ホーム</a></li>
+                    <li><a href="about.html">会社情報</a></li>
+                                            <li class="nav-dropdown">
+                            <a href="works.html">施工事例</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="works.html#exterior">エクステリア</a></li>
+                                <li><a href="works.html#zoen">造園</a></li>
+                            </ul>
+                        </li>
+                    <li><a href="gallery.html">図面ギャラリー</a></li>
+                    <li><a href="flow.html">工事の流れ</a></li>
+                    <li><a href="staff.html">スタッフ紹介</a></li>
+                    <li><a href="faq.html">お庭のQ&A</a></li>
+                    <li class="mobile-only"><a href="contact.html" style="color: var(--primary-color); font-weight: bold;">お問合せ</a></li>
+                </ul>
+            </nav>
+            <div class="hamburger">
+                <span></span><span></span><span></span>
+            </div>
+        </div>
+    </header>
+
+    <div id="detail-container">
+        <div class="loading">データを読み込み中...</div>
+    </div>
+
+    <!-- Lightbox -->
+    <div id="lightbox">
+        <span class="close-lightbox">&times;</span>
+        <img src="" alt="拡大画像">
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-bottom">
+            <div class="container footer-flex">
+                <div class="footer-info">
+                    <h3>G-craft 山田造園</h3>
+                    <p>〒849-0901 佐賀県佐賀市久保泉町大字川久保2946<br>TEL: 0952-98-1550</p>
+                </div>
+                <div class="footer-links">
+                    <ul>
+                        <li><a href="index.html">ホーム</a></li>
+                        <li><a href="about.html">会社情報</a></li>
+                                                <li class="nav-dropdown">
+                            <a href="works.html">施工事例</a>
+                            <ul class="dropdown-menu">
+                                <li><a href="works.html#exterior">エクステリア</a></li>
+                                <li><a href="works.html#zoen">造園</a></li>
+                            </ul>
+                        </li>
+                        <li><a href="gallery.html">図面ギャラリー</a></li>
+                        <li><a href="flow.html">工事の流れ</a></li>
+                        <li><a href="staff.html">スタッフ紹介</a></li>
+                        <li><a href="faq.html">お庭のQ&A</a></li>
+                    </ul>
+                </div>
+            </div>
+            <p class="copyright">&copy; 2026 G-craft Yamada Zoen. All Rights Reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Header scroll effect
+            const header = document.querySelector('.header');
+            if(header) {
+                window.addEventListener('scroll', () => {
+                    if (window.scrollY > 50) {
+                        header.classList.add('scrolled');
+                    } else {
+                        header.classList.remove('scrolled');
+                    }
+                });
+            }
+            // Preloader
+            const preloader = document.getElementById('preloader');
+            if(preloader) {
+                setTimeout(() => {
+                    preloader.style.opacity = '0';
+                    preloader.style.visibility = 'hidden';
+                }, 800);
+            }
+            const hamburger = document.querySelector('.hamburger');
+            const nav = document.querySelector('.global-nav');
+            
+            hamburger.addEventListener('click', () => {
+                hamburger.classList.toggle('active');
+                nav.classList.toggle('active');
+            });
+
+            const params = new URLSearchParams(window.location.search);
+            const id = params.get('id');
+            const container = document.getElementById('detail-container');
+            const type = params.get('type') || 'works';
+            const backUrl = type === 'gallery' ? 'gallery.html' : 'works.html';
+            const backText = type === 'gallery' ? '図面ギャラリー一覧へ戻る' : '施工事例一覧へ戻る';
+
+            if (!id || !detailData[id]) {
+                container.innerHTML = '<div class="error">申し訳ありません。お探しの事例は見つかりませんでした。<br><br><a href="' + backUrl + '" class="back-link">' + backText + '</a></div>';
+                return;
+            }
+
+            const item = detailData[id];
+            
+            let contentHtml = '';
+            
+            // 旧サイトの順番通り（写真→文章）をペアにしてカードにする
+            if (item.blocks && item.blocks.length > 0) {
+                const validBlocks = item.blocks.filter(block => {
+                    if (block.type === 'image') {
+                        return !(block.content.includes('w250_h125.jpg') || block.content.includes('w715_h150.jpg') || block.content.includes('_h150.jpg'));
+                    } else if (block.type === 'text') {
+                        const txt = block.content;
+                        return !(txt.includes('G-craft') || txt.includes('山田造園') || txt.includes('〒849-0901') || txt.includes('問合せページが便利'));
+                    }
+                    return false;
+                });
+
+                let cards = [];
+                let currentCard = { image: null, texts: [] };
+
+                for (let i = 0; i < validBlocks.length; i++) {
+                    const block = validBlocks[i];
+                    
+                    if (block.type === 'image') {
+                        // 新しい画像が来たとき、現在のカードを保存して次へ
+                        if (currentCard.image || currentCard.texts.length > 0) {
+                            cards.push(currentCard);
+                            currentCard = { image: null, texts: [] };
+                        }
+                        currentCard.image = block.content;
+                    } else if (block.type === 'text') {
+                        // テキストは空行を取り除いて追加
+                        const cleanText = block.content.trim();
+                        if (cleanText) {
+                            currentCard.texts.push(cleanText);
+                        }
+                    }
+                }
+                if (currentCard.image || currentCard.texts.length > 0) {
+                    cards.push(currentCard);
+                }
+
+                let introHtml = '';
+                contentHtml += '<div class="detail-card-grid">';
+                
+                cards.forEach(card => {
+                    // 画像がない（テキストのみの）場合はカードにせず、グリッドの上に独立したテキストとして表示
+                    if (!card.image) {
+                        introHtml += '<div class="detail-block-text fade-up" style="margin-bottom: 30px; font-size: 1.05rem; line-height: 1.8;">';
+                        card.texts.forEach(txt => {
+                            introHtml += `<p style="margin-bottom: 1em;">${txt.replace(/\n/g, '<br>')}</p>`;
+                        });
+                        introHtml += '</div>';
+                        return;
+                    }
+
+                    // 画像とテキストのペアをカードとして生成
+                    contentHtml += '<div class="detail-card fade-up">';
+                    contentHtml += `<div class="card-img-wrap"><img src="${card.image}" alt="施工詳細画像"></div>`;
+                    if (card.texts.length > 0) {
+                        contentHtml += '<div class="card-text-wrap">';
+                        card.texts.forEach(txt => {
+                            contentHtml += `<p style="margin-bottom: 1em;">${txt.replace(/\n/g, '<br>')}</p>`;
+                        });
+                        contentHtml += '</div>';
+                    }
+                    contentHtml += '</div>';
+                });
+
+                contentHtml += '</div>';
+                contentHtml = introHtml + contentHtml;
+            }
+
+            if (!contentHtml) {
+                contentHtml = '<div class="detail-block-text fade-up"><p>詳細情報がありません。</p></div>';
+            }
+
+            container.innerHTML = `
+                <div class="detail-content">
+                    ${contentHtml}
+                    <div style="text-align: center; margin-top: 60px;">
+                        <a href="${backUrl}" class="back-link">${backText}</a>
+                    </div>
+                </div>
+            `;
+
+            // Lightbox functionality
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = lightbox.querySelector('img');
+            
+            document.querySelectorAll('.card-img-wrap img').forEach(img => {
+                img.style.cursor = 'zoom-in';
+                img.addEventListener('click', () => {
+                    lightboxImg.src = img.src;
+                    lightbox.style.display = 'flex';
+                    // 少し遅らせてクラスを付与し、フワッと表示させるアニメーションを発動
+                    setTimeout(() => lightbox.classList.add('active'), 10);
+                });
+            });
+
+            lightbox.addEventListener('click', () => {
+                lightbox.classList.remove('active');
+                setTimeout(() => lightbox.style.display = 'none', 300);
+            });
+
+            // Simple intersection observer for fade-up elements generated dynamically
+            const observerOptions = { root: null, rootMargin: '0px', threshold: 0.15 };
+            const observer = new IntersectionObserver((entries, obs) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        obs.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+        });
+    </script>
+<script>
+document.addEventListener('click', function(e) {
+    const link = e.target.closest('a');
+    if (link && link.getAttribute('href') === 'index.html') {
+        sessionStorage.setItem('skipIntroNext', 'true');
+    }
+});
+</script>
+</body>
+</html>
+
+
+
+
