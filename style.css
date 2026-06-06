@@ -926,7 +926,7 @@ ul.dropdown-menu {
     }
 
     .section-title h2 { 
-        font-size: 2rem; 
+        font-size: clamp(1.4rem, 5.5vw, 2rem); 
     }
     
     /* Header Mobile */
