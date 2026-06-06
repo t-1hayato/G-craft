@@ -364,6 +364,10 @@ ul.dropdown-menu {
     display: none;
 }
 
+.mobile-br {
+    display: none;
+}
+
 /* Hamburger Menu (Mobile) */
 .hamburger {
     display: none;
@@ -1221,6 +1225,16 @@ ul.dropdown-menu {
         line-height: 1.6;
     }
     .about-image { min-height: 300px; }
+    
+    .mobile-br { display: block; }
+    
+    .cta-btn {
+        padding: 16px 20px;
+        font-size: 1rem;
+        white-space: nowrap;
+        width: 100%;
+        max-width: 320px;
+    }
     
     /* Home Works Horizontal Scroll */
     #works .works-grid {
