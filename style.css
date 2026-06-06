@@ -431,6 +431,8 @@ ul.dropdown-menu {
     0% { transform: scale(1.05); }
     100% { transform: scale(1.15); }
 }
+
+.hero-bg {
     z-index: -1;
     animation: zoomOut 20s linear infinite alternate;
 }
