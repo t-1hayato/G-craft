@@ -43,7 +43,7 @@ html {
 }
 
 body {
-    font-family: var(--font-base);
+    font-family: var(--font-heading);
     color: var(--text-color);
     background-color: var(--bg-color);
     line-height: 1.8;
@@ -471,7 +471,6 @@ ul.dropdown-menu {
 }
 
 .hero-subtitle {
-    font-family: var(--font-base), sans-serif;
     font-size: 1.2rem;
     font-weight: 400;
 }
@@ -961,14 +960,14 @@ ul.dropdown-menu {
     
     .hero-title {
         font-family: var(--font-heading), serif !important;
-        font-size: clamp(1.8rem, 7vw, 2.4rem);
+        font-size: 1.7rem;
         margin-bottom: 25px;
         line-height: 1.4;
         font-weight: 600;
     }
     
     .hero-subtitle {
-        font-family: var(--font-base), sans-serif !important;
+        font-size: 1rem;
     }
     
     .hero .btn {
