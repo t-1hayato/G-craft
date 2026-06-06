@@ -1215,6 +1215,11 @@ ul.dropdown-menu {
 
 @media (max-width: 768px) {
     .concept-wrap { flex-direction: column; }
+    .concept-text { text-align: center; }
+    .concept-text h3 {
+        font-size: clamp(1.1rem, 5vw, 1.6rem);
+        line-height: 1.6;
+    }
     .news-item { flex-direction: column; align-items: flex-start; gap: 10px; }
     .news-date { width: auto; }
 }
